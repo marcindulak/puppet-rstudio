@@ -1,0 +1,13 @@
+<VirtualHost *:80>
+
+  TransferLog	/var/log/apache2/rstudio_access.log
+  ErrorLog	/var/log/apache2/rstudio_error.log
+
+  <Proxy *>
+    Allow from localhost
+  </Proxy>
+
+  ProxyPass        / http://localhost:<%= scope.lookupvar("rstudio::params::port") %>/
+  ProxyPassReverse / http://localhost:<%= scope.lookupvar("rstudio::params::port") %>/
+
+</VirtualHost>

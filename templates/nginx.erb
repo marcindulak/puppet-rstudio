@@ -1,0 +1,17 @@
+server {
+    listen	80;
+
+    access_log	/var/log/nginx/rstudio_access.log;
+    error_log	/var/log/nginx/rstudio_error.log;
+
+    location / {
+        # http://www.rstudio.com/ide/docs/server/running_with_proxy
+        proxy_pass	http://127.0.0.1:<%= scope.lookupvar("rstudio::params::port") %>/;
+        proxy_redirect	http://127.0.0.1:<%= scope.lookupvar("rstudio::params::port") %>/ $scheme://$host/;
+
+        # http://wiki.nginx.org/HttpProxyModule#proxy_max_temp_file_size
+        proxy_max_temp_file_size	0;
+
+        client_body_buffer_size		128k;
+    }
+}
