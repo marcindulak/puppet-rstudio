@@ -7,7 +7,7 @@ class rstudio::params {
     $port = 8787
 
     # The maximum file size to upload (in MB)
-    $size = 1
+    $size = 20
 
     # The maximum memory limit (in MB)
     $mlimit = 300
