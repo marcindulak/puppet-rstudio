@@ -1,3 +1,11 @@
+Description
+-----------
+
+A simple puppet module that installs and configures an RStudio server,
+and optionally, apache/nginx proxy.
+The module does not use any available apache/nginx or other puppet modules.
+
+
 Sample Usage
 ------------
 
@@ -13,6 +21,7 @@ apply with::
 
     sudo puppet apply --verbose /etc/puppet/manifests/site.pp
 
+
 Configuration
 -------------
 
@@ -23,6 +32,7 @@ Dependencies
 ------------
 
 None
+
 
 Todo
 ----
