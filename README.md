@@ -13,8 +13,8 @@ Create /etc/puppet/manifests/site.pp::
 
     node default {
         include rstudio
-        include rstudio::apache
-        #include rstudio::nginx
+        #include rstudio::apache
+        include rstudio::nginx
     }
 
 apply with::
