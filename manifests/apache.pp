@@ -1,47 +1,94 @@
 class rstudio::apache {
+  
+  include rstudio::params
+  
+  # needed by exec, otherwise one needs to provide full path to sed, grep, ...
+  Exec {
+    path => "/bin:/sbin:/usr/bin:/usr/sbin",
+  }
 
-    include rstudio::params
-
-    package { "apache2":
-    ensure => latest,
-      require => Exec['apt-get update'],
+  case $::osfamily {
+    "redhat": {
+      $apache_package = "httpd"
+      $apache_service = "httpd"
+      $apache_confdir = "/etc/httpd/conf.d"
+      $libxml2_devel_package = "libxml2-devel"
     }
-
-    package { "libapache2-mod-proxy-html":
-    ensure => latest,
-      require => Exec['apt-get update'],
+    "debian": {
+      $apache_package = "apache2"
+      $apache_service = "apache2"
+      case $::operatingsystemrelease {
+        /^7.*$/: {  # Debian 7
+          $apache_confdir = "/etc/apache2/conf.d"
+        }
+        default: {
+          $apache_confdir = "/etc/apache2/conf-available"
+        }
+      }
+      $libxml2_devel_package = "libxml2-dev"
     }
-
-    package { "libxml2-dev":
-    ensure => latest,
-      require => Exec['apt-get update'],
+    default: {
+      $apache_package = undef
+      $apache_service = undef
+      $apache_confdir = undef
+      $libxml2_devel_package = undef
     }
-
-    exec { "a2enmod proxy":
-      command => '/usr/sbin/a2enmod proxy',
-      require => Package['apache2', 'libapache2-mod-proxy-html'],
+  }
+  
+  package { $apache_package:
+    name => $apache_package,
+    ensure => installed,
+  }
+  
+  #package { $libxml2_devel_package:
+  #  name => $libxml2_devel_package,
+  #  ensure => installed,
+  #}
+    
+  case $::osfamily {
+    "debian": {
+      package { "libapache2-mod-proxy-html":
+        ensure => installed,
+        require => Package[$apache_package],
+      }
     }
-
-    exec { "a2enmod proxy_http":
-      command => '/usr/sbin/a2enmod proxy_http',
-      require => Package['apache2', 'libapache2-mod-proxy-html'],
+  }
+  
+  case $::osfamily {
+    "debian": {
+      exec { "a2enmod proxy":
+        command => "a2enmod proxy",
+        require => Package[$apache_package,
+                           "libapache2-mod-proxy-html"],
+      }
     }
-
-    file {
-      "/etc/apache2/conf.d/rstudio.conf":
-      ensure  => file,
-      content => template("rstudio/apache.erb"),
-      require => Package['apache2'],
+  }
+  
+  case $::osfamily {
+    "debian": {
+      exec { "a2enmod proxy_http":
+        command => "a2enmod proxy_http",
+        require => Package[$apache_package,
+                           "libapache2-mod-proxy-html"],
+      }
     }
-
-    service {
-      "apache2":
-    ensure     => 'running',
-      require    => [File['/etc/apache2/conf.d/rstudio.conf'],
-                     Exec['a2enmod proxy', 'a2enmod proxy_http'] ],
-      subscribe  => [
-                     File['/etc/apache2/conf.d/rstudio.conf'],
-                    ],
-    }
+  }
+  
+  file { "$apache_confdir/rstudio.conf":
+    ensure => file,
+    content => template("rstudio/apache.erb"),
+    require => Package[$apache_package],
+  }
+  
+  service { $apache_service:
+    ensure => running,
+    enable => true,
+    require => $::osfamily ? {
+      'debian' => [File["$apache_confdir/rstudio.conf"],
+                   Exec["a2enmod proxy", "a2enmod proxy_http"]],
+      'redhat' => File["$apache_confdir/rstudio.conf"],
+    },
+    subscribe => File["$apache_confdir/rstudio.conf"],
+  }
 
 }

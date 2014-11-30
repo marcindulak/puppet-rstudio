@@ -1,7 +1,7 @@
 <VirtualHost *:80>
 
-  TransferLog	/var/log/apache2/rstudio_access.log
-  ErrorLog	/var/log/apache2/rstudio_error.log
+  TransferLog	<%= scope.lookupvar("rstudio::params::apache_logdir") %>/rstudio_access.log
+  ErrorLog	<%= scope.lookupvar("rstudio::params::apache_logdir") %>/rstudio_error.log
 
   <Proxy *>
     Allow from localhost
