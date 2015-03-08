@@ -20,8 +20,8 @@ test the module with::
 
 If you prefer using nginx instead of the default apache, do::
 
-        $ sed -i '' '/*.::apache.*/d' puppet-rstudio/tests/site.pp
-        $ sed -i '' 's/#//' puppet-rstudio/tests/site.pp
+        $ sed -i '/::apache/d' puppet-rstudio/tests/site.pp
+        $ sed -i 's/#//' puppet-rstudio/tests/site.pp
 
 Then start and provision virtual machines (VM) with::
 
