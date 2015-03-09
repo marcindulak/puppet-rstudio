@@ -5,8 +5,8 @@ Vagrant.configure(2) do |config|
   config.vm.define "puppet" do |puppet|
     puppet.vm.box = "puppetlabs/centos-6.6-64-nocm"
     puppet.vm.box_url = 'puppetlabs/centos-6.6-64-nocm'
-    puppet.vm.synced_folder "puppet-rstudio", "/etc/puppet/modules/rstudio"
-    puppet.vm.synced_folder "puppet-rstudio/tests", "/etc/puppet/manifests"
+    puppet.vm.synced_folder ".", "/etc/puppet/modules/rstudio"
+    puppet.vm.synced_folder "tests", "/etc/puppet/manifests"
     puppet.vm.network "private_network", ip: "10.0.4.5"
   end
   # rhel6

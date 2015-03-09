@@ -16,12 +16,12 @@ Assuming you have Vagrant installed from https://www.vagrantup.com/downloads.htm
 test the module with::
 
         $ git clone https://github.com/marcindulak/puppet-rstudio.git
-        $ ln -s puppet-rstudio/Vagrantfile
+        $ cd puppet-rstudio
 
 If you prefer using nginx instead of the default apache, do::
 
-        $ sed -i '/::apache/d' puppet-rstudio/tests/site.pp
-        $ sed -i 's/#//' puppet-rstudio/tests/site.pp
+        $ sed -i '/::apache/d' tests/site.pp
+        $ sed -i 's/#//' tests/site.pp
 
 Then start and provision virtual machines (VM) with::
 
