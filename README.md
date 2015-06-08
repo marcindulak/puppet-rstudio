@@ -2,6 +2,8 @@
 Description
 -----------
 
+**Warning**: not maintained anymore!
+
 A puppet module that installs and configures an RStudio server, and
 optionally, apache/nginx localhost proxy, on amd64 Debian(Ubuntu) or x86_64 RHEL(Fedora)
 The module does not use any available apache/nginx or other puppet modules.
